@@ -1,0 +1,30 @@
+variableStartSymbol=$
+variableLimit=(...)
+formulaStartSymbol=@
+formulaLimit={...}
+commentLineChar=*
+
+roundOff=10
+
+datasetFilter=contains("(.*)","MORET") && !contains("(.*)","MORET4")
+
+outputlist=mean_keff sigma_keff dkeff_pertu sigma_dkeff_pertu
+# pertu tmp
+outputfunctions=GaussianDensity:mean_keff,sigma_keff Numeric:mean_keff+3*sigma_keff Numeric:mean_keff
+
+output.mean_keff.if=true
+output.mean_keff.get=grep("(.*).listing","(FAIBLE|LOWEST) SIGMA") >> get(1) >> cut("SIGMA",2) >> replace("ESTI.","") >> substring("ZZZ","+/-") >> asNumeric()
+output.mean_keff.default=1.0
+
+output.sigma_keff.if=true
+output.sigma_keff.get=grep("(.*).listing","(FAIBLE|LOWEST) SIGMA") >> get(1) >> cut("SIGMA",2) >> replace("ESTI.","") >> substring("+/-",":") >> substring(3) >> asNumeric()
+output.sigma_keff.default=0.001
+
+output.dkeff_pertu.if=contains("(.*)","PERTU")
+output.dkeff_pertu.get=grep("(.*).listing","(FAIBLE|LOWEST) SIGMA") >> get(2) >> cut("SIGMA",2) >> replace("ESTI.","") >>  substring("ZZZ","+/-") >> asNumeric()
+output.dkeff_pertu.default=0.01
+
+output.sigma_dkeff_pertu.if=contains("(.*)","PERTU")
+output.sigma_dkeff_pertu.get=grep("(.*).listing","(FAIBLE|LOWEST) SIGMA") >> get(2) >> cut("SIGMA",2) >> replace("ESTI.","") >> substring("+/-","##") >> substring(3) >> asNumeric()
+output.sigma_dkeff_pertu.default=0.00001
+

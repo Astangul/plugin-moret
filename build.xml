@@ -1,0 +1,20 @@
+<project name="plugin-moret" default="test" basedir=".">
+
+    <property name="code.name" value="moret" />
+    <property name="install.dir" value="${basedir}/Funz-${code.name}" />
+
+    <property name="funz.release" value="v1.9" />
+
+    <property name="build_plugin.xml" location="../funz-profile/build_plugin.xml" />
+    <import file="${build_plugin.xml}"/>
+	
+    <target name="dist" depends="dist-ioplugin"/> <!-- dist-ioplugin: copy just the plugin ascii files -->
+	        
+    <target name="test" depends="test-ioplugin"/> <!-- test-ioplugin: test the plugin ascii files -->
+    
+    <target name="install" depends="install-plugin"/> <!-- test-ioplugin: test the plugin ascii files -->
+
+    <target name="super.clean" depends="clean"/>
+    <target name="super.run-reference-cases" depends="run-reference-cases"/>
+
+</project>

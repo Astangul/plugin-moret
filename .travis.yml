@@ -1,0 +1,50 @@
+language: java
+matrix:
+  include:
+    - name: "Linux JDK8"
+      os: linux
+      dist: trusty
+      jdk:
+        - openjdk8
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+    - name: "MacOS JDK8"
+      os: osx
+      osx_image: xcode9.3
+#    - name: "Windows" --- Not yet supported
+#      os: windows
+#      jdk:
+#        - openjdk8
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; brew install ant; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
+
+install:
+  - WD=$PWD
+  - cd ..
+  - git clone https://github.com/Funz/funz-profile
+  - cd $WD
+
+script: 
+  - ant test
+
+before_deploy:
+  - ant clean dist
+  - cd dist; zip -r ../plugin-moret.zip *; cd ..
+  - ant install
+  - zip -r Funz-moret.zip Funz-moret
+  
+deploy:
+  provider: releases
+  api_key:
+    secure: __PUT_YOUR_GITHUB_ACCESS_KEY_HERE__:_'travis_setup_releases_--force'_will_generate_a_correct_.travis.yml
+  file_glob: true
+  file:
+    - Funz-*.zip
+    - plugin-*.zip
+  on:
+    tags: true
+    branch: master
+  skip_cleanup: true
+  overwrite: true

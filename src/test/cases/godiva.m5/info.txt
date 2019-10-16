@@ -1,0 +1,5 @@
+code=moret
+output={sigma_keff\=0.001, mean_keff\=0.99612}
+calc=localhost\:45379
+output.mean_keff=0.99612
+output.sigma_keff=0.001
